@@ -142,11 +142,10 @@ public class ElevensBoard {
         for (int k = 0; k < cards.length; k++) {
             if (cards[k] != null) {
                 numCards++;
-                selected.add(new Integer(k));
             }
         }
         Integer[] selected = new Integer[numCards];
-        selectedIdx = 0;
+        int selectedIdx = 0;
         for (int k = 0; k < cards.length; k++) {
             if (cards[k] != null) {
                 selected[selectedIdx] = (new Integer(k));
@@ -198,8 +197,18 @@ public class ElevensBoard {
      * @return true if the selected cards form a valid group for removal;
      *         false otherwise.
      */
+
     public boolean isLegal(Integer[] selectedCards) {
         /* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
+
+        if (selectedCards.length == 2) {
+            return containsPairSum11(selectedCards) == true;
+        } else if (selectedCards.length == 3) {
+            return containsJQK(selectedCards) == true;
+        } else {
+            return false;
+        }
+
     }
 
     /**
@@ -213,12 +222,11 @@ public class ElevensBoard {
      */
     private boolean containsPairSum11(Integer[] selectedCards) {
         /* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
-        // pick one card, compare against all other, pick the second card, compare
-        // against other....
-        for (int i = 0; i < selectedCards.length; i++) {
-            int thisCard = selectedCards[i];
-            for (int j = 0; j < selectedCards.length; j++) {
-                if (thisCard + selectedCards[j] == 11) {
+        for (int pair1 = 0; pair1 < selectedCards.length; pair1++) {
+            int nPair1 = selectedCards[pair1].intValue();
+            for (int pair2 = pair1 + 1; pair2 < selectedCards.length; pair2++) {
+                int nPair2 = selectedCards[pair2].intValue();
+                if (cardAt(nPair1).pointValue() + cardAt(nPair2).pointValue() == 11) {
                     return true;
                 }
             }
@@ -237,6 +245,20 @@ public class ElevensBoard {
      */
     private boolean containsJQK(Integer[] selectedCards) {
         /* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
+        boolean yesJack = false;
+        boolean yesQueen = false;
+        boolean yesKing = false;
+        for (Integer specialC : selectedCards) {
+            int k = specialC.intValue();
+            if (cardAt(k).rank().equals("jack")) {
+                yesJack = true;
+            } else if (cardAt(k).rank().equals("queen")) {
+                yesQueen = true;
+            } else if (cardAt(k).rank().equals("king")) {
+                yesKing = true;
+            }
+        }
+        return yesJack && yesQueen && yesQueen;
     }
 
     /**
@@ -250,6 +272,16 @@ public class ElevensBoard {
      */
     public boolean anotherPlayIsPossible() {
         /* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
+        int amountOfCards = cards.length;
+        Integer[] cardsValuesOnDeck = new Integer[cards.length];
+        for (int i = 0; i < cardsValuesOnDeck.length; i++) {
+            cardsValuesOnDeck[i] = cards[i].pointValue();
+        }
+
+        return (isLegal(cardsValuesOnDeck));
+
+        // Integer [] selectedCards > totalInd = cardIndexes();
+        // return containsPairSum11(totalInd) || containsJQK(totalInd);
     }
 
     /**
